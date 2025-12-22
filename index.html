@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Stats Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #161823;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .chart-container {
+            position: relative;
+            height: 450px;
+            width: 100%;
+        }
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📊 TikTok Engagement Overview</h1>
+    <div id="loading" class="loading">Data များကို GitHub မှ ရယူနေပါသည်...</div>
+    <div class="chart-container">
+        <canvas id="tiktokChart"></canvas>
+    </div>
+</div>
+
+<div class="footer">Auto-updates every 5 mins via GitHub Actions</div>
+
+<script>
+    const GITHUB_URL = 'https://raw.githubusercontent.com/mmsoftware100/tiktok-crawler/main/tiktok_results.json';
+
+    // "1.2K" သို့မဟုတ် "500" ကို ကိန်းဂဏန်းအစစ်ပြောင်းပေးမည့် Function
+    function parseCount(val) {
+        if (!val || val === "Not Found") return 0;
+        let str = val.toString().toUpperCase().replace(/,/g, '');
+        if (str.includes('K')) return parseFloat(str) * 1000;
+        if (str.includes('M')) return parseFloat(str) * 1000000;
+        return parseInt(str) || 0;
+    }
+
+    async function loadData() {
+        try {
+            const response = await fetch(GITHUB_URL);
+            const data = await response.json();
+            
+            document.getElementById('loading').style.display = 'none';
+
+            const labels = data.map((_, index) => `Post ${index + 1}`);
+            const likes = data.map(item => parseCount(item.like_count));
+            const comments = data.map(item => parseCount(item.comment_count));
+
+            const ctx = document.getElementById('tiktokChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Likes',
+                            data: likes,
+                            backgroundColor: '#fe2c55', // TikTok Pink
+                            borderRadius: 6,
+                        },
+                        {
+                            label: 'Comments',
+                            data: comments,
+                            backgroundColor: '#25f4ee', // TikTok Cyan
+                            borderRadius: 6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        } catch (error) {
+            document.getElementById('loading').innerHTML = "Error: Data ဆွဲလို့မရပါ (Repo public ဖြစ်မဖြစ် စစ်ပေးပါ)";
+            console.error(error);
+        }
+    }
+
+    loadData();
+</script>
+
+</body>
+</html>
