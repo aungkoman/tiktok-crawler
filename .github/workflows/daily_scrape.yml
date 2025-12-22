@@ -2,7 +2,7 @@ name: Daily TikTok Scraper
 
 on:
   schedule:
-    - cron: '0 0 * * *' # မြန်မာစံတော်ချိန် မနက် ၆:၃၀ တိုင်း run မယ် (UTC 00:00)
+    - cron: '*/5 * * * *'
   workflow_dispatch: # Manual run ချင်ရင်လည်း ရအောင် လုပ်ထားတာ
 
 jobs:
