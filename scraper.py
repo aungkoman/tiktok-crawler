@@ -34,6 +34,14 @@ async def get_tiktok_data(urls):
 async def main():
     links = [
         "https://www.tiktok.com/@ucstaungoo/photo/7585957965694373128",
+        "https://www.tiktok.com/@ucstaungoo/photo/7585932236638276872",
+    "https://www.tiktok.com/@ucstaungoo/photo/7585930829637946644",
+    "https://www.tiktok.com/@ucstaungoo/photo/7585929608617381141",
+    "https://www.tiktok.com/@ucstaungoo/photo/7585928587333733640",
+    "https://www.tiktok.com/@ucstaungoo/photo/7585927021449088277",
+    "https://www.tiktok.com/@ucstaungoo/photo/7585926177651510548",
+    "https://www.tiktok.com/@ucstaungoo/photo/7585925981039316232",
+    "https://www.tiktok.com/@ucstaungoo/photo/7585925214501113108"
         # ... တခြား links များ ...
     ]
     data = await get_tiktok_data(links)
